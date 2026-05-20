@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_HUB_USER = 'snnehahaa'
+        DOCKER_HUB_USER = 'suchith141'
         IMAGE_NAME      = 'todo-list-app'
         IMAGE_TAG       = "${BUILD_NUMBER}"
         // 💡 This forces all background Java sub-processes to restrict their memory usage!
