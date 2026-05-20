@@ -1,0 +1,16 @@
+{
+  "name": "simple-todo-app",
+  "version": "1.0.0",
+  "description": "A simple, premium full-stack to-do list application.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

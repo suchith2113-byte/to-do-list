@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow — Premium To-Do List</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-background-decoration"></div>
+    
+    <div class="app-container">
+        <!-- Header & Stats -->
+        <header class="app-header">
+            <div class="header-main">
+                <h1>TaskFlow</h1>
+                <p class="subtitle">Organize your daily routine beautifully</p>
+            </div>
+            
+            <div class="stats-panel" id="statsPanel">
+                <div class="stats-text">
+                    <span id="completedRatio">0 of 0 tasks</span>
+                    <span id="completedPercentage">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Controls Section (Search + Add) -->
+        <section class="controls-section">
+            <!-- Add Task Form -->
+            <form id="addTaskForm" class="glass-card add-task-form">
+                <div class="input-group">
+                    <input type="text" id="taskTitleInput" placeholder="Add a new task..." required autocomplete="off">
+                </div>
+                <div class="form-actions">
+                    <div class="select-wrapper">
+                        <select id="taskCategorySelect">
+                            <option value="General">General</option>
+                            <option value="Work">Work</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Health">Health</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                    <button type="submit" class="btn-primary" id="addTaskBtn">
+                        <i class="fa-solid fa-plus"></i> Add Task
+                    </button>
+                </div>
+            </form>
+
+            <!-- Search and Filter Bar -->
+            <div class="search-filter-bar">
+                <div class="search-wrapper glass-card">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchBar" placeholder="Search tasks..." autocomplete="off">
+                </div>
+                
+                <div class="filter-tabs glass-card">
+                    <button class="filter-tab active" data-filter="all" id="filterTabAll">All</button>
+                    <button class="filter-tab" data-filter="active" id="filterTabActive">Active</button>
+                    <button class="filter-tab" data-filter="completed" id="filterTabCompleted">Completed</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Task List Section -->
+        <section class="task-list-section">
+            <ul id="taskList" class="task-list">
+                <!-- Tasks will be rendered dynamically by JavaScript -->
+            </ul>
+            <div id="emptyState" class="empty-state">
+                <i class="fa-regular fa-clipboard empty-icon"></i>
+                <p>No tasks found. Create a new task above!</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2>Edit Task</h2>
+                <button id="closeModalBtn" class="btn-icon-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="editTaskForm">
+                <input type="hidden" id="editTaskId">
+                <div class="form-field">
+                    <label for="editTaskTitleInput">Task Name</label>
+                    <input type="text" id="editTaskTitleInput" required autocomplete="off">
+                </div>
+                <div class="form-field">
+                    <label for="editTaskCategorySelect">Category</label>
+                    <div class="select-wrapper">
+                        <select id="editTaskCategorySelect">
+                            <option value="General">General</option>
+                            <option value="Work">Work</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Health">Health</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancelEditBtn" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
