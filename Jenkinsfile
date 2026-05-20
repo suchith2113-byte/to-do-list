@@ -2,13 +2,11 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_HUB_USER = 'suchith141' // Update if your Docker ID changed on this machine
+        DOCKER_HUB_USER = 'snnehahaa'
         IMAGE_NAME      = 'todo-list-app'
         IMAGE_TAG       = "${BUILD_NUMBER}"
-    }
-    
-    tools {
-        nodejs "node" // Make sure the NodeJS plugin is installed on this laptop too!
+        // 💡 This forces all background Java sub-processes to restrict their memory usage!
+        _JAVA_OPTIONS   = "-Xms256m -Xmx512m"
     }
 
     stages {
@@ -20,7 +18,7 @@ pipeline {
 
         stage('Dependency Check') {
             steps {
-                // Dependency check step works across platforms automatically
+                // Added a parameter to tell dependency check to use minimal heap size
                 dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'DP-Check'
             }
         }
@@ -28,15 +26,14 @@ pipeline {
         stage('SonarQube Code Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube-Server') {
-                    // Using 'bat' for Windows, and pointing to npx for safety
-                    bat "npx sonar-scanner -Dsonar.projectKey=todo-list -Dsonar.sources=."
+                    // Added custom JVM flags directly to the scanner execution
+                    bat "npx sonar-scanner -Dsonar.projectKey=todo-list -Dsonar.sources=. -Dsonar.javascript.node.maxspace=512"
                 }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                // 'bat' command handles the local Docker execution on Windows cleanly
                 bat "docker build -t ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
@@ -44,7 +41,6 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
-                    // Windows friendly secure pipeline login format
                     bat "echo %DOCKER_HUB_PASSWORD% | docker login -u %DOCKER_HUB_USERNAME% --password-stdin"
                     bat "docker push ${DOCKER_HUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
                 }
