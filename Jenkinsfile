@@ -24,7 +24,8 @@ pipeline {
         stage('SonarQube Code Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube-Server') {
-                    bat "npx sonar-scanner -Dsonar.projectKey=todo-list -Dsonar.sources=. -Dsonar.javascript.node.maxspace=512"
+                    // 💡 Changed maxspace to 2048 to give the internal Node file parser plenty of breathing room!
+                    bat "npx sonar-scanner -Dsonar.projectKey=todo-list -Dsonar.sources=. -Dsonar.javascript.node.maxspace=2048"
                 }
             }
         }
