@@ -2,11 +2,11 @@ pipeline {
     agent any
     
     environment {
+        // 1. Updated user variable name to match your friend's repository target
         DOCKER_HUB_USER = 'edith777'
         IMAGE_NAME      = 'todo-list-app'
-        // 💡 Use standard single quotes here so Jenkins passes the raw build number cleanly
-        IMAGE_TAG       = '${BUILD_NUMBER}'
-        _JAVA_OPTIONS   = '-Xms256m -Xmx512m'
+        IMAGE_TAG       = "${BUILD_NUMBER}" 
+        _JAVA_OPTIONS   = "-Xms256m -Xmx512m"
     }
 
     stages {
@@ -32,7 +32,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                // 💡 Inside bat scripts, we reference the environment variables using Windows syntax
+                // 🛠️ FIXED: Changed Linux variables to Windows %VARIABLES% inside the bat block
                 bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% ."
             }
         }
@@ -41,6 +41,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
                     bat "echo %DOCKER_HUB_PASSWORD% | docker login -u %DOCKER_HUB_USERNAME% --password-stdin"
+                    // 🛠️ FIXED: Changed Linux variables to Windows %VARIABLES% inside the bat block
                     bat "docker push %DOCKER_HUB_USER%/%IMAGE_NAME%:%IMAGE_TAG%"
                 }
             }
