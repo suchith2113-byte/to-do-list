@@ -34,6 +34,14 @@ stages:
         cliSources: '.'
         extraProperties: |
           sonar.javascript.node.maxspace=2048
+      env:
+        BUILD_SOURCEBRANCHNAME: "" # 👈 tricking the extension to hide the branch name
+
+    # Execute the actual scan
+    - task: SonarQubeAnalyze@7
+      displayName: 'Run SonarQube Scan'
+      env:
+        BUILD_SOURCEBRANCHNAME: "" # 👈 tricking the extension here too
 
     # Execute the actual scan
     - task: SonarQubeAnalyze@7
