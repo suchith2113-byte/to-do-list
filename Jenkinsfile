@@ -1,7 +1,6 @@
 pipeline {
     agent any
     
-    // 🛠️ Only keeping NodeJS here since Jenkins explicitly likes 'nodejs'
     tools {
         nodejs 'node'
     }
@@ -14,6 +13,9 @@ pipeline {
         
         VERCEL_ORG_ID     = 'team_Fe5X8EwtGMw9UGgfEw0Z11l2'
         VERCEL_PROJECT_ID = 'prj_gZIA5AGD2d3X5KFlWwnDZbKDqYHe'
+        
+        // 🍏 Explicitly mapping macOS global binary targets
+        PATH              = "/usr/local/bin:${env.PATH}"
     }
 
     stages {
@@ -25,7 +27,6 @@ pipeline {
 
         stage('SonarQube Code Analysis') {
             steps {
-                // This dynamically resolves the scanner path without crashing the global validator
                 script {
                     def scannerHome = tool 'Sonar-Scanner'
                     withSonarQubeEnv('SonarQube-Server') {
