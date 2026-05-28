@@ -1,9 +1,8 @@
 trigger:
   - main
 
-# 💻 Switch from 'vmImage: ubuntu-latest' to your local pool name:
 pool:
-  name: 'Default'
+  name: 'Default' # 💻 Directly routes jobs to your active local Mac terminal runner
 
 variables:
   - group: vercel-secrets # Links your secure Vercel variables from Library
@@ -25,7 +24,7 @@ stages:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
 
-    # 🛠️ Manual CLI Scan: Completely avoids extension branch issues
+    # 🛠️ Manual CLI Scan: Bypasses extension parameters to remain compatible with free Community Edition
     - script: |
         npm install -g sonar-scanner
         sonar-scanner \
