@@ -2,12 +2,12 @@ trigger:
   - main
 
 pool:
-  name: 'Default' # 💻 Directly targets your local active Mac terminal runner
+  name: 'Default'
 
 variables:
-  - group: vercel-secrets # Links your secure Vercel variables from Library
+  - group: vercel-secrets # 👈 Double check that this matches your Library group name exactly!
   - name: dockerRegistryServiceConnection
-    value: 'dockerhub-connection' # Matches your Docker Hub Service Connection name
+    value: 'dockerhub-connection' 
   - name: imageRepository
     value: 'suchith141/todo-list-app'
   - name: tag
@@ -24,7 +24,6 @@ stages:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
 
-    # 🛠️ Persistent Local Properties Scan
     - script: |
         npm install sonarqube-scanner --no-save
         npx sonar-scanner -Dsonar.login="sqa_7d7ddee200b2d91fadc9279c3c360a58ec6d36fe"
@@ -51,18 +50,21 @@ stages:
   dependsOn: BuildAndPush
   jobs:
   - job: VercelDeploy
+    variables:
+      # 🔒 This forces the pipeline runner to explicitly fetch the secret from the group mapped above
+      TOKEN: $[variables.VERCEL_TOKEN]
+      ORG: $[variables.VERCEL_ORG_ID]
+      PROJECT: $[variables.VERCEL_PROJECT_ID]
     steps:
     - task: NodeTool@0
       inputs:
         versionSpec: '20.x'
       displayName: 'Install Node.js for Deployment'
 
-    # 🎯 Macro Expansion: Using $(VERCEL_TOKEN) directly inside the script line
-    # forces Azure DevOps to compile the string token value on the host level.
     - script: |
         npm install --global vercel
-        vercel --token=$(VERCEL_TOKEN) --prod --yes
+        vercel --token=$(TOKEN) --prod --yes
       displayName: 'Execute Cloud Vercel Deploy'
       env:
-        VERCEL_ORG_ID: $(VERCEL_ORG_ID)
-        VERCEL_PROJECT_ID: $(VERCEL_PROJECT_ID)
+        VERCEL_ORG_ID: $(ORG)
+        VERCEL_PROJECT_ID: $(PROJECT)
