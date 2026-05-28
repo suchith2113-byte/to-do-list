@@ -2,11 +2,15 @@ pipeline {
     agent any
     
     environment {
-        // 1. Updated user variable name to match your friend's repository target
-        DOCKER_HUB_USER = 'edith777'
-        IMAGE_NAME      = 'todo-list-app'
-        IMAGE_TAG       = "${BUILD_NUMBER}" 
-        _JAVA_OPTIONS   = "-Xms256m -Xmx512m"
+        DOCKER_HUB_USER   = 'suchith141'
+        IMAGE_NAME        = 'todo-list-app'
+        IMAGE_TAG         = "${BUILD_NUMBER}" 
+        _JAVA_OPTIONS     = "-Xms256m -Xmx512m"
+        
+        // 🚀 VERCEL CONFIGURATION
+        // Replace these with your actual Vercel project and organization IDs
+        VERCEL_ORG_ID     = 'prj_gZIA5AGD2d3X5KFlWwnDZbKDqYHe'
+        VERCEL_PROJECT_ID = 'team_Fe5X8EwtGMw9UGgfEw0Z11l2'
     }
 
     stages {
@@ -32,7 +36,6 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                // 🛠️ FIXED: Changed Linux variables to Windows %VARIABLES% inside the bat block
                 bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:%IMAGE_TAG% ."
             }
         }
@@ -41,8 +44,17 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
                     bat "echo %DOCKER_HUB_PASSWORD% | docker login -u %DOCKER_HUB_USERNAME% --password-stdin"
-                    // 🛠️ FIXED: Changed Linux variables to Windows %VARIABLES% inside the bat block
                     bat "docker push %DOCKER_HUB_USER%/%IMAGE_NAME%:%IMAGE_TAG%"
+                }
+            }
+        }
+
+        stage('Deploy to Vercel') {
+            steps {
+                withCredentials([string(credentialsId: 'vercel-token', variable: 'VERCEL_TOKEN')]) {
+                    // Installs Vercel CLI locally for this build run and pushes to production instantly
+                    bat "npm install --global vercel"
+                    bat "vercel --token %VERCEL_TOKEN% --prod --yes"
                 }
             }
         }
