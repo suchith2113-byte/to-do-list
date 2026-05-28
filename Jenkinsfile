@@ -1,10 +1,9 @@
 pipeline {
     agent any
     
-    // 🛠️ AUTOMATICALLY PROVISION TOOLS ON YOUR MAC
+    // 🛠️ Only keeping NodeJS here since Jenkins explicitly likes 'nodejs'
     tools {
         nodejs 'node'
-        sonarRunner 'Sonar-Scanner' // ✅ FIXED: Changed to the required identifier name
     }
     
     environment {
@@ -26,9 +25,12 @@ pipeline {
 
         stage('SonarQube Code Analysis') {
             steps {
-                // 'SonarQube-Server' must match the name in Manage Jenkins -> System -> SonarQube servers
-                withSonarQubeEnv('SonarQube-Server') {
-                    sh "sonar-scanner -Dsonar.projectKey=todo-list -Dsonar.sources=. -Dsonar.javascript.node.maxspace=2048"
+                // This dynamically resolves the scanner path without crashing the global validator
+                script {
+                    def scannerHome = tool 'Sonar-Scanner'
+                    withSonarQubeEnv('SonarQube-Server') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=todo-list -Dsonar.sources=. -Dsonar.javascript.node.maxspace=2048"
+                    }
                 }
             }
         }
