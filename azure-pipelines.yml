@@ -24,12 +24,12 @@ stages:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
 
-    # 🛠️ Manual CLI Scan: Bypasses the extension to prevent the paid branch name error
+    # 🛠️ Manual CLI Scan: Completely avoids extension branch issues
     - script: |
         npm install -g sonar-scanner
         sonar-scanner \
           -Dsonar.host.url="https://98b9-103-39-127-160.ngrok-free.app" \
-          -Dsonar.token="sqa_3237e862bd5219f015098ffa3d88b155f431499d" \
+          -Dsonar.token="sqa_7d7ddee200b2d91fadc9279c3c360a58ec6d36fe" \
           -Dsonar.projectKey="todo-list" \
           -Dsonar.sources="." \
           -Dsonar.javascript.node.maxspace=2048
