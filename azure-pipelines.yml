@@ -1,0 +1,75 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest' # ☁️ Fully cloud-hosted Linux runner (No local Mac setup required!)
+
+variables:
+  - group: vercel-secrets # Links your secure Vercel variables
+  - name: dockerRegistryServiceConnection
+    value: 'dockerhub-connection' # Matches your Service Connection name
+  - name: imageRepository
+    value: 'suchith141/todo-list-app'
+  - name: tag
+    value: '$(Build.BuildId)'
+
+stages:
+- stage: CodeQuality
+  displayName: 'SonarQube Analysis'
+  jobs:
+  - job: Analyze
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js'
+
+    # Prepare SonarQube analysis
+    - task: SonarQubePrepare@5
+      inputs:
+        SonarQube: 'sonarqube-connection'
+        scannerMode: 'CLI'
+        configMode: 'manual'
+        cliProjectKey: 'todo-list'
+        cliSources: '.'
+        extraProperties: |
+          sonar.javascript.node.maxspace=2048
+
+    # Execute the actual scan
+    - task: SonarQubeAnalyze@5
+      displayName: 'Run SonarQube Scan'
+
+- stage: BuildAndPush
+  displayName: 'Containerize & Push'
+  dependsOn: CodeQuality
+  jobs:
+  - job: Build
+    steps:
+    - task: Docker@2
+      displayName: 'Build and Push to Docker Hub'
+      inputs:
+        containerRegistry: '$(dockerRegistryServiceConnection)'
+        repository: '$(imageRepository)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: |
+          $(tag)
+
+- stage: Deploy
+  displayName: 'Deploy to Vercel'
+  dependsOn: BuildAndPush
+  jobs:
+  - job: VercelDeploy
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js for Deployment'
+
+    - script: |
+        npm install --global vercel
+        vercel --token $(VERCEL_TOKEN) --prod --yes
+      displayName: 'Execute Cloud Vercel Deploy'
+      env:
+        VERCEL_ORG_ID: $(VERCEL_ORG_ID)
+        VERCEL_PROJECT_ID: $(VERCEL_PROJECT_ID)
