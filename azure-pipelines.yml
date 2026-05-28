@@ -2,16 +2,19 @@ trigger:
   - main
 
 pool:
-  name: 'Default' # 💻 Routes jobs directly to your local Mac terminal runner
+  name: 'Default' # 💻 Runs locally on your Mac agent
 
 variables:
-  - group: vercel-secrets # Links your secure Vercel variables from Library
+  - group: vercel-secrets 
   - name: dockerRegistryServiceConnection
-    value: 'dockerhub-connection' # Matches your Docker Hub Service Connection name
+    value: 'dockerhub-connection' 
   - name: imageRepository
     value: 'suchith141/todo-list-app'
   - name: tag
     value: '$(Build.BuildId)'
+  # 🔑 PASTE YOUR NEW TOKEN HERE Safely:
+  - name: SONAR_TOKEN
+    value: 'squ_0578451a7a62e930ee1e721b41a69ecc9b812f3f'
 
 stages:
 - stage: CodeQuality
@@ -24,10 +27,15 @@ stages:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
 
-    # 🛠️ Clean Local Connection: No ngrok dependencies, using a fresh Global User Token
+    # 🛠️ Clean local run utilizing the cleanly decoupled variable syntax
     - script: |
         npm install sonarqube-scanner --no-save
-        npx sonar-scanner -Dsonar.host.url="http://localhost:9000" -Dsonar.token="squ_0578451a7a62e930ee1e721b41a69ecc9b812f3f" -Dsonar.projectKey="todo-list" -Dsonar.sources="." -Dsonar.javascript.node.maxspace=2048
+        npx sonar-scanner \
+          -Dsonar.host.url="http://localhost:9000" \
+          -Dsonar.token="$(SONAR_TOKEN)" \
+          -Dsonar.projectKey="todo-list" \
+          -Dsonar.sources="." \
+          -Dsonar.javascript.node.maxspace=2048
       displayName: 'Run Manual SonarQube Scan'
 
 - stage: BuildAndPush
