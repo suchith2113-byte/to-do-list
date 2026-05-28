@@ -13,7 +13,6 @@ variables:
   - name: tag
     value: '$(Build.BuildId)'
 
-stages:
 - stage: CodeQuality
   displayName: 'SonarQube Analysis'
   jobs:
@@ -23,6 +22,12 @@ stages:
       inputs:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
+
+    # 🛠️ Safe Local Scan: No global install permissions needed, single continuous execution string
+    - script: |
+        npm install sonarqube-scanner --no-save
+        npx sonar-scanner -Dsonar.host.url="https://98b9-103-39-127-160.ngrok-free.app" -Dsonar.token="sqa_7d7ddee200b2d91fadc9279c3c360a58ec6d36fe" -Dsonar.projectKey="todo-list" -Dsonar.sources="." -Dsonar.javascript.node.maxspace=2048
+      displayName: 'Run Manual SonarQube Scan'
 
     # 🛠️ Manual CLI Scan: Bypasses extension parameters to remain compatible with free Community Edition
     - script: |
