@@ -25,7 +25,7 @@ stages:
       displayName: 'Install Node.js'
 
     # Prepare SonarQube analysis
-    - task: SonarQubePrepare@6
+    - task: SonarQubePrepare@7
       inputs:
         SonarQube: 'sonarqube-connection'
         scannerMode: 'CLI'
@@ -36,7 +36,7 @@ stages:
           sonar.javascript.node.maxspace=2048
 
     # Execute the actual scan
-    - task: SonarQubeAnalyze@6
+    - task: SonarQubeAnalyze@7
       displayName: 'Run SonarQube Scan'
 
 - stage: BuildAndPush
@@ -45,7 +45,7 @@ stages:
   jobs:
   - job: Build
     steps:
-    - task: Docker@2
+    - task: docker@2 # 👈 Use lowercase 'docker' here
       displayName: 'Build and Push to Docker Hub'
       inputs:
         containerRegistry: '$(dockerRegistryServiceConnection)'
