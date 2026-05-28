@@ -25,7 +25,7 @@ stages:
       displayName: 'Install Node.js'
 
     # Prepare SonarQube analysis
-    - task: SonarQubePrepare@5
+    - task: SonarQubePrepare@6
       inputs:
         SonarQube: 'sonarqube-connection'
         scannerMode: 'CLI'
