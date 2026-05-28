@@ -2,7 +2,7 @@ trigger:
   - main
 
 pool:
-  name: 'Default' # 💻 Directly routes jobs to your active local Mac terminal runner
+  name: 'Default' # 💻 Routes jobs directly to your local Mac terminal runner
 
 variables:
   - group: vercel-secrets # Links your secure Vercel variables from Library
@@ -13,6 +13,7 @@ variables:
   - name: tag
     value: '$(Build.BuildId)'
 
+stages:
 - stage: CodeQuality
   displayName: 'SonarQube Analysis'
   jobs:
@@ -23,21 +24,10 @@ variables:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
 
-    # 🛠️ Safe Local Scan: No global install permissions needed, single continuous execution string
+    # 🛠️ Safe Local Scan: Single flat line string avoiding backslash continuation errors
     - script: |
         npm install sonarqube-scanner --no-save
         npx sonar-scanner -Dsonar.host.url="https://98b9-103-39-127-160.ngrok-free.app" -Dsonar.token="sqa_7d7ddee200b2d91fadc9279c3c360a58ec6d36fe" -Dsonar.projectKey="todo-list" -Dsonar.sources="." -Dsonar.javascript.node.maxspace=2048
-      displayName: 'Run Manual SonarQube Scan'
-
-    # 🛠️ Manual CLI Scan: Bypasses extension parameters to remain compatible with free Community Edition
-    - script: |
-        npm install -g sonar-scanner
-        sonar-scanner \
-          -Dsonar.host.url="https://98b9-103-39-127-160.ngrok-free.app" \
-          -Dsonar.token="sqa_7d7ddee200b2d91fadc9279c3c360a58ec6d36fe" \
-          -Dsonar.projectKey="todo-list" \
-          -Dsonar.sources="." \
-          -Dsonar.javascript.node.maxspace=2048
       displayName: 'Run Manual SonarQube Scan'
 
 - stage: BuildAndPush
