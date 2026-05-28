@@ -1,8 +1,9 @@
 trigger:
   - main
 
+# 💻 Switch from 'vmImage: ubuntu-latest' to your local pool name:
 pool:
-  vmImage: 'ubuntu-latest' # ☁️ Fully cloud-hosted Linux runner
+  name: 'Default'
 
 variables:
   - group: vercel-secrets # Links your secure Vercel variables from Library
