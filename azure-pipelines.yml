@@ -29,7 +29,7 @@ stages:
         npm install -g sonar-scanner
         sonar-scanner \
           -Dsonar.host.url="https://98b9-103-39-127-160.ngrok-free.app" \
-          -Dsonar.token="sqa_52b1b04ffa9471780a5f8dd02f2ba24a0be98869" \
+          -Dsonar.token="sqa_3237e862bd5219f015098ffa3d88b155f431499d" \
           -Dsonar.projectKey="todo-list" \
           -Dsonar.sources="." \
           -Dsonar.javascript.node.maxspace=2048
