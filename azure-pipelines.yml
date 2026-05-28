@@ -2,12 +2,12 @@ trigger:
   - main
 
 pool:
-  vmImage: 'ubuntu-latest' # ☁️ Fully cloud-hosted Linux runner (No local Mac setup required!)
+  vmImage: 'ubuntu-latest' # ☁️ Fully cloud-hosted Linux runner
 
 variables:
-  - group: vercel-secrets # Links your secure Vercel variables
+  - group: vercel-secrets # Links your secure Vercel variables from Library
   - name: dockerRegistryServiceConnection
-    value: 'dockerhub-connection' # Matches your Service Connection name
+    value: 'dockerhub-connection' # Matches your Docker Hub Service Connection name
   - name: imageRepository
     value: 'suchith141/todo-list-app'
   - name: tag
@@ -35,17 +35,13 @@ stages:
         extraProperties: |
           sonar.javascript.node.maxspace=2048
       env:
-        BUILD_SOURCEBRANCHNAME: "" # 👈 tricking the extension to hide the branch name
+        BUILD_SOURCEBRANCHNAME: "" # 👇 Tricking the extension to hide the branch name for Community Edition
 
     # Execute the actual scan
     - task: SonarQubeAnalyze@7
       displayName: 'Run SonarQube Scan'
       env:
-        BUILD_SOURCEBRANCHNAME: "" # 👈 tricking the extension here too
-
-    # Execute the actual scan
-    - task: SonarQubeAnalyze@7
-      displayName: 'Run SonarQube Scan'
+        BUILD_SOURCEBRANCHNAME: "" # 👇 Hiding branch name here as well
 
 - stage: BuildAndPush
   displayName: 'Containerize & Push'
@@ -53,7 +49,7 @@ stages:
   jobs:
   - job: Build
     steps:
-    - task: docker@2 # 👈 Use lowercase 'docker' here
+    - task: docker@2
       displayName: 'Build and Push to Docker Hub'
       inputs:
         containerRegistry: '$(dockerRegistryServiceConnection)'
