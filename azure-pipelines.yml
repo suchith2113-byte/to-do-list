@@ -24,24 +24,16 @@ stages:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
 
-    # Prepare SonarQube analysis
-    - task: SonarQubePrepare@7
-      inputs:
-        SonarQube: 'sonarqube-connection'
-        scannerMode: 'CLI'
-        configMode: 'manual'
-        cliProjectKey: 'todo-list'
-        cliSources: '.'
-        extraProperties: |
-          sonar.javascript.node.maxspace=2048
-      env:
-        BUILD_SOURCEBRANCHNAME: "" # 👇 Tricking the extension to hide the branch name for Community Edition
-
-    # Execute the actual scan
-    - task: SonarQubeAnalyze@7
-      displayName: 'Run SonarQube Scan'
-      env:
-        BUILD_SOURCEBRANCHNAME: "" # 👇 Hiding branch name here as well
+    # 🛠️ Manual CLI Scan: Bypasses the extension to prevent the paid branch name error
+    - script: |
+        npm install -g sonar-scanner
+        sonar-scanner \
+          -Dsonar.host.url="https://98b9-103-39-127-160.ngrok-free.app" \
+          -Dsonar.token="sqa_52b1b04ffa9471780a5f8dd02f2ba24a0be98869" \
+          -Dsonar.projectKey="todo-list" \
+          -Dsonar.sources="." \
+          -Dsonar.javascript.node.maxspace=2048
+      displayName: 'Run Manual SonarQube Scan'
 
 - stage: BuildAndPush
   displayName: 'Containerize & Push'
