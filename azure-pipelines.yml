@@ -27,7 +27,7 @@ stages:
     # 🛠️ Safe Local Scan: Single flat line string avoiding backslash continuation errors
     - script: |
         npm install sonarqube-scanner --no-save
-        npx sonar-scanner -Dsonar.host.url="https://98b9-103-39-127-160.ngrok-free.app" -Dsonar.token="sqa_7d7ddee200b2d91fadc9279c3c360a58ec6d36fe" -Dsonar.projectKey="todo-list" -Dsonar.sources="." -Dsonar.javascript.node.maxspace=2048
+        npx sonar-scanner -Dsonar.host.url="https://98b9-103-39-127-160.ngrok-free.app" -Dsonar.token="squ_82b7effa0639a04e92c8f93aa992731fa8cd233b" -Dsonar.projectKey="todo-list" -Dsonar.sources="." -Dsonar.javascript.node.maxspace=2048
       displayName: 'Run Manual SonarQube Scan'
 
 - stage: BuildAndPush
