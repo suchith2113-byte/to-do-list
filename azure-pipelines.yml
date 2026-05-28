@@ -58,10 +58,12 @@ stages:
         versionSpec: '20.x'
       displayName: 'Install Node.js for Deployment'
 
+    # 🛠️ Fixed Environment Mapping: Explicitly injects VERCEL_TOKEN into the step environment
     - script: |
         npm install --global vercel
-        vercel --token $(VERCEL_TOKEN) --prod --yes
+        vercel --token $VERCEL_TOKEN --prod --yes
       displayName: 'Execute Cloud Vercel Deploy'
       env:
+        VERCEL_TOKEN: $(VERCEL_TOKEN)
         VERCEL_ORG_ID: $(VERCEL_ORG_ID)
         VERCEL_PROJECT_ID: $(VERCEL_PROJECT_ID)
