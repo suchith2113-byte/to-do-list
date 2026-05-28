@@ -2,7 +2,7 @@ trigger:
   - main
 
 pool:
-  name: 'Default' # 💻 Runs locally on your Mac agent
+  name: 'Default'
 
 variables:
   - group: vercel-secrets 
@@ -12,9 +12,6 @@ variables:
     value: 'suchith141/todo-list-app'
   - name: tag
     value: '$(Build.BuildId)'
-  # 🔑 PASTE YOUR NEW TOKEN HERE Safely:
-  - name: SONAR_TOKEN
-    value: 'squ_0578451a7a62e930ee1e721b41a69ecc9b812f3f'
 
 stages:
 - stage: CodeQuality
@@ -27,15 +24,10 @@ stages:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
 
-    # 🛠️ Clean local run utilizing the cleanly decoupled variable syntax
+    # 🛠️ Explicit fallback argument passing + local file tracking
     - script: |
         npm install sonarqube-scanner --no-save
-        npx sonar-scanner \
-          -Dsonar.host.url="http://localhost:9000" \
-          -Dsonar.token="$(SONAR_TOKEN)" \
-          -Dsonar.projectKey="todo-list" \
-          -Dsonar.sources="." \
-          -Dsonar.javascript.node.maxspace=2048
+        npx sonar-scanner -Dsonar.login="sqa_7d7ddee200b2d91fadc9279c3c360a58ec6d36fe"
       displayName: 'Run Manual SonarQube Scan'
 
 - stage: BuildAndPush
