@@ -24,10 +24,10 @@ stages:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
 
-    # 🛠️ Safe Local Scan: Single flat line string avoiding backslash continuation errors
+    # 🛠️ Clean Local Connection: No ngrok dependencies, using a fresh Global User Token
     - script: |
         npm install sonarqube-scanner --no-save
-        npx sonar-scanner -Dsonar.host.url="http://localhost:9000" -Dsonar.token="squ_82b7effa0639a04e92c8f93aa992731fa8cd233b" -Dsonar.projectKey="todo-list" -Dsonar.sources="." -Dsonar.javascript.node.maxspace=2048
+        npx sonar-scanner -Dsonar.host.url="http://localhost:9000" -Dsonar.token="squ_0578451a7a62e930ee1e721b41a69ecc9b812f3f" -Dsonar.projectKey="todo-list" -Dsonar.sources="." -Dsonar.javascript.node.maxspace=2048
       displayName: 'Run Manual SonarQube Scan'
 
 - stage: BuildAndPush
