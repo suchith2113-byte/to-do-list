@@ -36,7 +36,7 @@ stages:
           sonar.javascript.node.maxspace=2048
 
     # Execute the actual scan
-    - task: SonarQubeAnalyze@5
+    - task: SonarQubeAnalyze@6
       displayName: 'Run SonarQube Scan'
 
 - stage: BuildAndPush
