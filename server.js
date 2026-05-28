@@ -1,4 +1,4 @@
-/*const express = require('express');
+const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
@@ -121,4 +121,3 @@ app.delete('/api/todos/:id', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
-*/
